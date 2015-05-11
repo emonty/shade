@@ -19,6 +19,7 @@ test_delete_server
 Tests for the `delete_server` command.
 """
 
+import bunch
 import mock
 from novaclient import exceptions as nova_exc
 
@@ -37,9 +38,7 @@ class TestDeleteServer(base.TestCase):
         """
         Test that novaclient server delete is called when wait=False
         """
-        server = mock.MagicMock(id='1234',
-                                status='ACTIVE')
-        server.name = 'daffy'
+        server = bunch.Bunch(id='1234', status='ACTIVE', name = 'daffy')
         nova_mock.servers.list.return_value = [server]
         self.cloud.delete_server('daffy', wait=False)
         nova_mock.servers.delete.assert_called_with(server=server)
@@ -63,9 +62,7 @@ class TestDeleteServer(base.TestCase):
         """
         Test that delete_server waits for NotFound from novaclient
         """
-        server = mock.MagicMock(id='9999',
-                                status='ACTIVE')
-        server.name = 'wily'
+        server = bunch.Bunch(id='9999', status='ACTIVE', name = 'wily')
         nova_mock.servers.list.return_value = [server]
 
         def _delete_wily(*args, **kwargs):
